@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Wouter Saelens" />
+<meta name="author" content="Robrecht Cannoodt" />
+
+<meta name="date" content="2019-10-10" />
+
+<title>Creating a TI method: R</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Creating a TI method: R</h1>
+<h4 class="author">Wouter Saelens</h4>
+<h4 class="author">Robrecht Cannoodt</h4>
+<h4 class="date">2019-10-10</h4>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(dynwrap)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co"># dyncli is not installed on travis or CRAN, so don't run some parts of the vignette there</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">NOT_CRAN &lt;-<span class="st"> </span><span class="kw">identical</span>(<span class="kw">tolower</span>(<span class="kw">Sys.getenv</span>(<span class="st">&quot;NOT_CRAN&quot;</span>)), <span class="st">&quot;true&quot;</span>)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">NOT_TRAVIS &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">identical</span>(<span class="kw">tolower</span>(<span class="kw">Sys.getenv</span>(<span class="st">&quot;TRAVIS&quot;</span>)), <span class="st">&quot;true&quot;</span>)</a></code></pre></div>
+<p>This vignette describes how to include your own method into the dynverse workflow. We’ll illustrate this with a very basic method: using one of the components of a PCA as the pseudotime.</p>
+<p>A method defined in R has two parts: a definition and a function.</p>
+<div id="definition" class="section level2">
+<h2>Definition</h2>
+<p>The definition contains information on the method, its parameters and its required or optional inputs. The possibilities are quite extensive (see <code>dynwrap::definition()</code>), but essentials are:</p>
+<ul>
+<li>Method definition with the <em>id</em> of the method</li>
+<li>Parameters if applicable. These are defined using the <code>dynparam</code> package.</li>
+<li>Required inputs (<em>input_required</em>) and if applicable some optional inputs (<em>input_optional</em>). Inputs can be:
+<ul>
+<li><em>expression</em> or <em>counts</em></li>
+<li>Some prior information, see <code>dynwrap::priors</code></li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">definition &lt;-<span class="st"> </span><span class="kw">definition</span>(</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">  <span class="dt">method =</span> <span class="kw">def_method</span>(</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">      <span class="dt">id =</span> <span class="st">&quot;comp1&quot;</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">    ),</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dt">parameters =</span> <span class="kw">def_parameters</span>(</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">    dynparam<span class="op">::</span><span class="kw">integer_parameter</span>(</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">      <span class="dt">id =</span> <span class="st">&quot;component&quot;</span>,</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">      <span class="dt">default =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">      <span class="dt">distribution =</span> dynparam<span class="op">::</span><span class="kw">uniform_distribution</span>(<span class="dv">1</span>, <span class="dv">10</span>),</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">      <span class="dt">description =</span> <span class="st">&quot;The nth component to use&quot;</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">    )</a>
+<a class="sourceLine" id="cb2-12" data-line-number="12">  ),</a>
+<a class="sourceLine" id="cb2-13" data-line-number="13">  <span class="dt">wrapper =</span> <span class="kw">def_wrapper</span>(</a>
+<a class="sourceLine" id="cb2-14" data-line-number="14">    <span class="dt">input_required =</span> <span class="st">&quot;expression&quot;</span>,</a>
+<a class="sourceLine" id="cb2-15" data-line-number="15">    <span class="dt">input_optional =</span> <span class="st">&quot;start_id&quot;</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16">  )</a>
+<a class="sourceLine" id="cb2-17" data-line-number="17">)</a></code></pre></div>
+</div>
+<div id="run-function" class="section level2">
+<h2>Run function</h2>
+<p>The actual inference of the trajectory is done in the run function. This function accepts:</p>
+<ul>
+<li><strong>expression or counts</strong></li>
+<li><strong>priors</strong> A list containing the requested priors</li>
+<li><strong>parameters</strong> A list containing the parameters</li>
+<li><strong>seed</strong> The seed provided by the user. In R this seed is already automatically set</li>
+<li><strong>verbose</strong> Integer of the level of verbosity that will be shown to the user. Based on this message, you can print out different info/warning/error messages.</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">run_fun &lt;-<span class="st"> </span><span class="cf">function</span>(expression, priors, parameters, seed, verbose) {</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">  pca &lt;-<span class="st"> </span><span class="kw">prcomp</span>(expression)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">  pseudotime &lt;-<span class="st"> </span>pca<span class="op">$</span>x[, parameters<span class="op">$</span>component]</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">  <span class="co"># flip pseudotimes using start_id</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(priors<span class="op">$</span>start_id)) {</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">    <span class="cf">if</span>(<span class="kw">mean</span>(pseudotime[start_id]) <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.5</span>) {</a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">      pseudotime &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span>pseudotime</a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">    }</a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">  }</a>
+<a class="sourceLine" id="cb3-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb3-13" data-line-number="13">  dynwrap<span class="op">::</span><span class="kw">wrap_data</span>(<span class="dt">cell_ids =</span> <span class="kw">rownames</span>(expression)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="st">    </span>dynwrap<span class="op">::</span><span class="kw">add_linear_trajectory</span>(<span class="dt">pseudotime =</span> pseudotime)</a>
+<a class="sourceLine" id="cb3-15" data-line-number="15">}</a></code></pre></div>
+<p>This function returns a trajectory object as described in <a href="../create_ti_method_wrappers">create a trajectory</a>. You may also add other relevant information to this output, often some timing checkpoints (<code>add_timings</code>), dimensionality reduction (<code>add_dimred</code>) or a cell clustering (<code>add_grouping</code>). Check out the <a href="https://dynverse.org/reference/dynwrap">reference</a> for an overview or <a href="https://github.com/dynverse/dynwrap">post an issue or pull request</a> if you want a type of output to be added.</p>
+</div>
+<div id="testing-it-out" class="section level2">
+<h2>Testing it out</h2>
+<p>To wrap the method, use <code>create_ti_method_r</code> with the definition and run function. At this stage you can also define some R packages that have to be installed or loaded.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">ti_comp1 &lt;-<span class="st"> </span><span class="kw">create_ti_method_r</span>(definition, run_fun, <span class="dt">package_loaded =</span> <span class="st">&quot;dplyr&quot;</span>)</a></code></pre></div>
+<p>This function will return another function that can be used to change any parameters when running the method. This function is also useful to document any parameters when included in an R package.</p>
+<p>That’s it, let’s try it out:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">dataset &lt;-<span class="st"> </span>dynwrap<span class="op">::</span>example_dataset</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">trajectory &lt;-<span class="st"> </span><span class="kw">infer_trajectory</span>(dataset, <span class="kw">ti_comp1</span>())</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="cf">if</span> (<span class="kw">requireNamespace</span>(<span class="st">&quot;dynplot&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">  dynplot<span class="op">::</span><span class="kw">plot_dimred</span>(trajectory, <span class="dt">color_cells =</span> <span class="st">&quot;pseudotime&quot;</span> , <span class="dt">expression_source =</span> <span class="kw">as.matrix</span>(dataset<span class="op">$</span>expression))</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">}</a></code></pre></div>
+</div>
+<div id="making-your-method-available-for-other-users" class="section level2">
+<h2>Making your method available for other users</h2>
+<p>The easiest way to make this method available to others is to put it in an <a href="http://r-pkgs.had.co.nz/">R package which exports the <code>ti_*</code> function</a>. Here you can also provide documentation using roxygen2. The parameters can be automatically documented from the information provided in the description using <code>@eval dynwrap::generate_parameter_documentation(definition)</code> (adapt the name of definition if necessary).</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">#' Infer a trajectory from the first principal component</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#' </span></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#' @eval dynwrap::generate_parameter_documentation(definition)</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#' </span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#' @import dplyr</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#' @export</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#' </span></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#' @examples</span></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#' dataset &lt;- dynwrap::example_dataset</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#' model &lt;- dynwrap::infer_trajectory(dataset, ti_comp1())</span></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">ti_comp1 &lt;-<span class="st"> </span><span class="kw">create_ti_method_r</span>(definition, run_fun)</a></code></pre></div>
+<p>The parameter documentation will look like follows:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">generate_parameter_documentation</span>(definition)</a></code></pre></div>
+<pre><code>## [1] &quot;@param component The nth component to use. Domain: U(1, 10). Default: 1. Format: integer.&quot;</code></pre>
+<p>We also strongly encourage you to include within our collection of TI methods available in the <a href="https://github.com/dynverse/dynmethods">dynmethods R package</a>. Feel free to <a href="https://github.com/dynverse/dynmethods/labels/new%20method">create an issue</a> or <a href="https://github.com/dynverse/dynmethods/pulls">send us a pull request</a>.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
