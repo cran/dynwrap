@@ -6,8 +6,14 @@
 \alias{get_expression}
 \title{Add count and normalised expression values to a dataset}
 \usage{
-add_expression(dataset, counts, expression, feature_info = NULL,
-  expression_projected = NULL, ...)
+add_expression(
+  dataset,
+  counts,
+  expression,
+  feature_info = NULL,
+  expression_future = NULL,
+  ...
+)
 
 is_wrapper_with_expression(dataset)
 
@@ -22,7 +28,7 @@ get_expression(dataset, expression_source = "expression")
 
 \item{feature_info}{Optional meta-information of the features, a dataframe with at least \emph{feature_id} as column}
 
-\item{expression_projected}{Projected expression using RNA velocity of genes (columns) within cells (rows).  This can be both a dense and sparse matrix.}
+\item{expression_future}{Projected expression using RNA velocity of genes (columns) within cells (rows).  This can be both a dense and sparse matrix.}
 
 \item{...}{extra information to be stored in the dataset}
 

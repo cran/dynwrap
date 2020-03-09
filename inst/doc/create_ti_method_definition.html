@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -14,7 +13,7 @@
 <meta name="author" content="Wouter Saelens" />
 <meta name="author" content="Robrecht Cannoodt" />
 
-<meta name="date" content="2019-10-10" />
+<meta name="date" content="2020-03-09" />
 
 <title>Creating a TI method: Script</title>
 
@@ -306,7 +305,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <h1 class="title toc-ignore">Creating a TI method: Script</h1>
 <h4 class="author">Wouter Saelens</h4>
 <h4 class="author">Robrecht Cannoodt</h4>
-<h4 class="date">2019-10-10</h4>
+<h4 class="date">2020-03-09</h4>
 
 
 
@@ -378,7 +377,7 @@ run.R
 <a class="sourceLine" id="cb3-24" data-line-number="24"><span class="co"># save output</span></a>
 <a class="sourceLine" id="cb3-25" data-line-number="25">dyncli<span class="op">::</span><span class="kw">write_output</span>(trajectory, dataset<span class="op">$</span>output)</a></code></pre></div>
 <p>Make sure this script is executable!</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="fu">chmod</span> +x run.R</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">Sys.chmod</span>(<span class="st">&quot;run.R&quot;</span>, <span class="dt">mode =</span> <span class="st">&quot;0770&quot;</span>)</a></code></pre></div>
 <p>and for Python:</p>
 <div class="filename">
 run.py
@@ -408,15 +407,17 @@ run.py
 </div>
 <div id="testing-it-out" class="section level2">
 <h2>Testing it out</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">method &lt;-<span class="st"> </span><span class="kw">create_ti_method_definition</span>(</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">  <span class="st">&quot;definition.yml&quot;</span>,</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">  <span class="st">&quot;run.R&quot;</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">)</a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">dataset &lt;-<span class="st"> </span>dynwrap<span class="op">::</span>example_dataset</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">trajectory &lt;-<span class="st"> </span><span class="kw">infer_trajectory</span>(dataset, <span class="kw">method</span>(), <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="cf">if</span> (<span class="kw">requireNamespace</span>(<span class="st">&quot;dyncli&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">  method &lt;-<span class="st"> </span><span class="kw">create_ti_method_definition</span>(</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">    <span class="st">&quot;definition.yml&quot;</span>,</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">    <span class="st">&quot;run.R&quot;</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">  )</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">  dataset &lt;-<span class="st"> </span>dynwrap<span class="op">::</span>example_dataset</a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">  trajectory &lt;-<span class="st"> </span><span class="kw">infer_trajectory</span>(dataset, <span class="kw">method</span>(), <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">}</a></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># install dynplot to plot the output</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="cf">if</span> (<span class="kw">requireNamespace</span>(<span class="st">&quot;dynplot&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">  dynplot<span class="op">::</span><span class="kw">plot_dimred</span>(trajectory, <span class="dt">color_cells =</span> <span class="st">&quot;pseudotime&quot;</span> , <span class="dt">expression_source =</span> <span class="kw">as.matrix</span>(dataset<span class="op">$</span>expression))</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">  dynplot<span class="op">::</span><span class="kw">plot_dimred</span>(trajectory, <span class="dt">color_cells =</span> <span class="st">&quot;pseudotime&quot;</span>, <span class="dt">expression_source =</span> <span class="kw">as.matrix</span>(dataset<span class="op">$</span>expression))</a>
 <a class="sourceLine" id="cb7-4" data-line-number="4">}</a></code></pre></div>
 </div>
 <div id="interactive-development" class="section level2">

@@ -5,13 +5,29 @@
 \alias{infer_trajectory}
 \title{Infer one or more trajectories from a single-cell dataset}
 \usage{
-infer_trajectories(dataset, method, parameters = NULL,
-  give_priors = NULL, seed = random_seed(), verbose = FALSE,
-  return_verbose = FALSE, debug = FALSE, map_fun = map)
+infer_trajectories(
+  dataset,
+  method,
+  parameters = NULL,
+  give_priors = NULL,
+  seed = random_seed(),
+  verbose = FALSE,
+  return_verbose = FALSE,
+  debug = FALSE,
+  map_fun = map
+)
 
-infer_trajectory(dataset, method, parameters = NULL,
-  give_priors = NULL, seed = random_seed(), verbose = FALSE,
-  return_verbose = FALSE, debug = FALSE, ...)
+infer_trajectory(
+  dataset,
+  method,
+  parameters = NULL,
+  give_priors = NULL,
+  seed = random_seed(),
+  verbose = FALSE,
+  return_verbose = FALSE,
+  debug = FALSE,
+  ...
+)
 }
 \arguments{
 \item{dataset}{One or more datasets as created by \code{\link[=wrap_data]{wrap_data()}} or \code{\link[=wrap_expression]{wrap_expression()}}. Prior information can be added using \code{\link[=add_prior_information]{add_prior_information()}}.}
@@ -43,7 +59,7 @@ Must be a subset of all available priors (\link[dynwrap:priors]{dynwrap::priors}
 \item{map_fun}{A map function to use when inferring trajectories with multiple datasets or methods.
 Allows to parallellise the execution in an arbitrary way.}
 
-\item{...}{Any additional parameters given to the method, will be concatednated to the parameters argument}
+\item{...}{Any additional parameters given to the method, will be concatenated to the parameters argument}
 }
 \value{
 \strong{\code{infer_trajectory}}: A trajectory object, which is a list containing

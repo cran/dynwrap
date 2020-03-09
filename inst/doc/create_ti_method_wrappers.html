@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -14,7 +13,7 @@
 <meta name="author" content="Wouter Saelens" />
 <meta name="author" content="Robrecht Cannoodt" />
 
-<meta name="date" content="2019-10-10" />
+<meta name="date" content="2020-03-09" />
 
 <title>Creating a TI method: Wrapping trajectories</title>
 
@@ -306,7 +305,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <h1 class="title toc-ignore">Creating a TI method: Wrapping trajectories</h1>
 <h4 class="author">Wouter Saelens</h4>
 <h4 class="author">Robrecht Cannoodt</h4>
-<h4 class="date">2019-10-10</h4>
+<h4 class="date">2020-03-09</h4>
 
 
 
@@ -330,32 +329,32 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <pre><code>## # A tibble: 10 x 3
 ##    cell_id milestone_id percentage
 ##    &lt;chr&gt;   &lt;chr&gt;             &lt;dbl&gt;
-##  1 Cell_a  Milestone_B      0.0326
-##  2 Cell_a  Milestone_D      0.967 
-##  3 Cell_b  Milestone_B      0.852 
-##  4 Cell_b  Milestone_C      0.148 
-##  5 Cell_c  Milestone_B      0.539 
-##  6 Cell_c  Milestone_C      0.461 
-##  7 Cell_d  Milestone_C      0.708 
-##  8 Cell_d  Milestone_F      0.292 
-##  9 Cell_e  Milestone_C      0.364 
-## 10 Cell_e  Milestone_F      0.636</code></pre>
+##  1 Cell_a  Milestone_C      0.447 
+##  2 Cell_a  Milestone_E      0.553 
+##  3 Cell_b  Milestone_C      0.599 
+##  4 Cell_b  Milestone_F      0.401 
+##  5 Cell_c  Milestone_B      0.468 
+##  6 Cell_c  Milestone_D      0.532 
+##  7 Cell_d  Milestone_C      0.513 
+##  8 Cell_d  Milestone_F      0.487 
+##  9 Cell_e  Milestone_B      0.941 
+## 10 Cell_e  Milestone_C      0.0593</code></pre>
 <ul>
 <li>Progressions, an alternative to milestone percentages, also contains the positions of each cell but now based on its progression through an edge</li>
 </ul>
 <pre><code>## # A tibble: 10 x 4
 ##    cell_id from        to          percentage
 ##    &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;            &lt;dbl&gt;
-##  1 Cell_a  Milestone_B Milestone_D     0.967 
-##  2 Cell_b  Milestone_B Milestone_C     0.148 
-##  3 Cell_c  Milestone_B Milestone_C     0.461 
-##  4 Cell_d  Milestone_C Milestone_F     0.292 
-##  5 Cell_e  Milestone_C Milestone_F     0.636 
-##  6 Cell_f  Milestone_B Milestone_C     0.0563
-##  7 Cell_g  Milestone_B Milestone_D     0.887 
-##  8 Cell_h  Milestone_B Milestone_C     0.150 
-##  9 Cell_i  Milestone_B Milestone_C     0.515 
-## 10 Cell_j  Milestone_A Milestone_B     0.406</code></pre>
+##  1 Cell_a  Milestone_C Milestone_E     0.553 
+##  2 Cell_b  Milestone_C Milestone_F     0.401 
+##  3 Cell_c  Milestone_B Milestone_D     0.532 
+##  4 Cell_d  Milestone_C Milestone_F     0.487 
+##  5 Cell_e  Milestone_B Milestone_C     0.0593
+##  6 Cell_f  Milestone_A Milestone_B     0.551 
+##  7 Cell_g  Milestone_B Milestone_C     0.934 
+##  8 Cell_h  Milestone_A Milestone_B     0.764 
+##  9 Cell_i  Milestone_C Milestone_F     0.210 
+## 10 Cell_j  Milestone_C Milestone_F     0.245</code></pre>
 <ul>
 <li>Divergence regions, contain the information on &gt;=3 milestones connected to eachother. This is optional.</li>
 </ul>

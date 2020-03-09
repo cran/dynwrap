@@ -1,11 +1,11 @@
-## ----setup---------------------------------------------------------------
+## ----setup--------------------------------------------------------------------
 library(dynwrap)
 
 # dyncli is not installed on travis or CRAN, so don't run some parts of the vignette there
 NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
 NOT_TRAVIS <- !identical(tolower(Sys.getenv("TRAVIS")), "true")
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 definition <- definition(
   method = def_method(
       id = "comp1"
@@ -24,7 +24,7 @@ definition <- definition(
   )
 )
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 run_fun <- function(expression, priors, parameters, seed, verbose) {
   pca <- prcomp(expression)
 
@@ -41,19 +41,19 @@ run_fun <- function(expression, priors, parameters, seed, verbose) {
     dynwrap::add_linear_trajectory(pseudotime = pseudotime)
 }
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 ti_comp1 <- create_ti_method_r(definition, run_fun, package_loaded = "dplyr")
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 dataset <- dynwrap::example_dataset
 trajectory <- infer_trajectory(dataset, ti_comp1())
 
-## ---- eval=NOT_CRAN && NOT_TRAVIS----------------------------------------
+## ---- eval=NOT_CRAN && NOT_TRAVIS---------------------------------------------
 #  if (requireNamespace("dynplot", quietly = TRUE)) {
 #    dynplot::plot_dimred(trajectory, color_cells = "pseudotime" , expression_source = as.matrix(dataset$expression))
 #  }
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 #' Infer a trajectory from the first principal component
 #' 
 #' @eval dynwrap::generate_parameter_documentation(definition)
@@ -66,6 +66,6 @@ trajectory <- infer_trajectory(dataset, ti_comp1())
 #' model <- dynwrap::infer_trajectory(dataset, ti_comp1())
 ti_comp1 <- create_ti_method_r(definition, run_fun)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 generate_parameter_documentation(definition)
 
