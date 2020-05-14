@@ -8,12 +8,12 @@
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Wouter Saelens" />
 <meta name="author" content="Robrecht Cannoodt" />
 
-<meta name="date" content="2020-03-09" />
+<meta name="date" content="2020-05-14" />
 
 <title>Creating a TI method: R</title>
 
@@ -38,7 +38,7 @@ a.sourceLine { text-indent: -1em; padding-left: 1em; }
 pre.numberSource a.sourceLine
   { position: relative; left: -4em; }
 pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+  { content: attr(title);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
     border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
@@ -118,9 +118,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -289,7 +286,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -305,15 +303,15 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <h1 class="title toc-ignore">Creating a TI method: R</h1>
 <h4 class="author">Wouter Saelens</h4>
 <h4 class="author">Robrecht Cannoodt</h4>
-<h4 class="date">2020-03-09</h4>
+<h4 class="date">2020-05-14</h4>
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(dynwrap)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co"># dyncli is not installed on travis or CRAN, so don't run some parts of the vignette there</span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">NOT_CRAN &lt;-<span class="st"> </span><span class="kw">identical</span>(<span class="kw">tolower</span>(<span class="kw">Sys.getenv</span>(<span class="st">&quot;NOT_CRAN&quot;</span>)), <span class="st">&quot;true&quot;</span>)</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">NOT_TRAVIS &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">identical</span>(<span class="kw">tolower</span>(<span class="kw">Sys.getenv</span>(<span class="st">&quot;TRAVIS&quot;</span>)), <span class="st">&quot;true&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(dynwrap)</a>
+<a class="sourceLine" id="cb1-2" title="2"></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="co"># dyncli is not installed on travis or CRAN, so don&#39;t run some parts of the vignette there</span></a>
+<a class="sourceLine" id="cb1-4" title="4">NOT_CRAN &lt;-<span class="st"> </span><span class="kw">identical</span>(<span class="kw">tolower</span>(<span class="kw">Sys.getenv</span>(<span class="st">&quot;NOT_CRAN&quot;</span>)), <span class="st">&quot;true&quot;</span>)</a>
+<a class="sourceLine" id="cb1-5" title="5">NOT_TRAVIS &lt;-<span class="st"> </span><span class="op">!</span><span class="kw">identical</span>(<span class="kw">tolower</span>(<span class="kw">Sys.getenv</span>(<span class="st">&quot;TRAVIS&quot;</span>)), <span class="st">&quot;true&quot;</span>)</a></code></pre></div>
 <p>This vignette describes how to include your own method into the dynverse workflow. We’ll illustrate this with a very basic method: using one of the components of a PCA as the pseudotime.</p>
 <p>A method defined in R has two parts: a definition and a function.</p>
 <div id="definition" class="section level2">
@@ -328,23 +326,23 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li>Some prior information, see <code>dynwrap::priors</code></li>
 </ul></li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">definition &lt;-<span class="st"> </span><span class="kw">definition</span>(</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">  <span class="dt">method =</span> <span class="kw">def_method</span>(</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">      <span class="dt">id =</span> <span class="st">&quot;comp1&quot;</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">    ),</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="dt">parameters =</span> <span class="kw">def_parameters</span>(</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">    dynparam<span class="op">::</span><span class="kw">integer_parameter</span>(</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">      <span class="dt">id =</span> <span class="st">&quot;component&quot;</span>,</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">      <span class="dt">default =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">      <span class="dt">distribution =</span> dynparam<span class="op">::</span><span class="kw">uniform_distribution</span>(<span class="dv">1</span>, <span class="dv">10</span>),</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">      <span class="dt">description =</span> <span class="st">&quot;The nth component to use&quot;</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">    )</a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">  ),</a>
-<a class="sourceLine" id="cb2-13" data-line-number="13">  <span class="dt">wrapper =</span> <span class="kw">def_wrapper</span>(</a>
-<a class="sourceLine" id="cb2-14" data-line-number="14">    <span class="dt">input_required =</span> <span class="st">&quot;expression&quot;</span>,</a>
-<a class="sourceLine" id="cb2-15" data-line-number="15">    <span class="dt">input_optional =</span> <span class="st">&quot;start_id&quot;</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16">  )</a>
-<a class="sourceLine" id="cb2-17" data-line-number="17">)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">definition &lt;-<span class="st"> </span><span class="kw">definition</span>(</a>
+<a class="sourceLine" id="cb2-2" title="2">  <span class="dt">method =</span> <span class="kw">def_method</span>(</a>
+<a class="sourceLine" id="cb2-3" title="3">      <span class="dt">id =</span> <span class="st">&quot;comp1&quot;</span></a>
+<a class="sourceLine" id="cb2-4" title="4">    ),</a>
+<a class="sourceLine" id="cb2-5" title="5">  <span class="dt">parameters =</span> <span class="kw">def_parameters</span>(</a>
+<a class="sourceLine" id="cb2-6" title="6">    dynparam<span class="op">::</span><span class="kw">integer_parameter</span>(</a>
+<a class="sourceLine" id="cb2-7" title="7">      <span class="dt">id =</span> <span class="st">&quot;component&quot;</span>,</a>
+<a class="sourceLine" id="cb2-8" title="8">      <span class="dt">default =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb2-9" title="9">      <span class="dt">distribution =</span> dynparam<span class="op">::</span><span class="kw">uniform_distribution</span>(<span class="dv">1</span>, <span class="dv">10</span>),</a>
+<a class="sourceLine" id="cb2-10" title="10">      <span class="dt">description =</span> <span class="st">&quot;The nth component to use&quot;</span></a>
+<a class="sourceLine" id="cb2-11" title="11">    )</a>
+<a class="sourceLine" id="cb2-12" title="12">  ),</a>
+<a class="sourceLine" id="cb2-13" title="13">  <span class="dt">wrapper =</span> <span class="kw">def_wrapper</span>(</a>
+<a class="sourceLine" id="cb2-14" title="14">    <span class="dt">input_required =</span> <span class="st">&quot;expression&quot;</span>,</a>
+<a class="sourceLine" id="cb2-15" title="15">    <span class="dt">input_optional =</span> <span class="st">&quot;start_id&quot;</span></a>
+<a class="sourceLine" id="cb2-16" title="16">  )</a>
+<a class="sourceLine" id="cb2-17" title="17">)</a></code></pre></div>
 </div>
 <div id="run-function" class="section level2">
 <h2>Run function</h2>
@@ -356,51 +354,51 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li><strong>seed</strong> The seed provided by the user. In R this seed is already automatically set</li>
 <li><strong>verbose</strong> Integer of the level of verbosity that will be shown to the user. Based on this message, you can print out different info/warning/error messages.</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">run_fun &lt;-<span class="st"> </span><span class="cf">function</span>(expression, priors, parameters, seed, verbose) {</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">  pca &lt;-<span class="st"> </span><span class="kw">prcomp</span>(expression)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">  pseudotime &lt;-<span class="st"> </span>pca<span class="op">$</span>x[, parameters<span class="op">$</span>component]</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">  <span class="co"># flip pseudotimes using start_id</span></a>
-<a class="sourceLine" id="cb3-7" data-line-number="7">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(priors<span class="op">$</span>start_id)) {</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">    <span class="cf">if</span>(<span class="kw">mean</span>(pseudotime[start_id]) <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.5</span>) {</a>
-<a class="sourceLine" id="cb3-9" data-line-number="9">      pseudotime &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span>pseudotime</a>
-<a class="sourceLine" id="cb3-10" data-line-number="10">    }</a>
-<a class="sourceLine" id="cb3-11" data-line-number="11">  }</a>
-<a class="sourceLine" id="cb3-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb3-13" data-line-number="13">  dynwrap<span class="op">::</span><span class="kw">wrap_data</span>(<span class="dt">cell_ids =</span> <span class="kw">rownames</span>(expression)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="st">    </span>dynwrap<span class="op">::</span><span class="kw">add_linear_trajectory</span>(<span class="dt">pseudotime =</span> pseudotime)</a>
-<a class="sourceLine" id="cb3-15" data-line-number="15">}</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">run_fun &lt;-<span class="st"> </span><span class="cf">function</span>(expression, priors, parameters, seed, verbose) {</a>
+<a class="sourceLine" id="cb3-2" title="2">  pca &lt;-<span class="st"> </span><span class="kw">prcomp</span>(expression)</a>
+<a class="sourceLine" id="cb3-3" title="3"></a>
+<a class="sourceLine" id="cb3-4" title="4">  pseudotime &lt;-<span class="st"> </span>pca<span class="op">$</span>x[, parameters<span class="op">$</span>component]</a>
+<a class="sourceLine" id="cb3-5" title="5"></a>
+<a class="sourceLine" id="cb3-6" title="6">  <span class="co"># flip pseudotimes using start_id</span></a>
+<a class="sourceLine" id="cb3-7" title="7">  <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.null</span>(priors<span class="op">$</span>start_id)) {</a>
+<a class="sourceLine" id="cb3-8" title="8">    <span class="cf">if</span>(<span class="kw">mean</span>(pseudotime[start_id]) <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.5</span>) {</a>
+<a class="sourceLine" id="cb3-9" title="9">      pseudotime &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">-</span>pseudotime</a>
+<a class="sourceLine" id="cb3-10" title="10">    }</a>
+<a class="sourceLine" id="cb3-11" title="11">  }</a>
+<a class="sourceLine" id="cb3-12" title="12"></a>
+<a class="sourceLine" id="cb3-13" title="13">  dynwrap<span class="op">::</span><span class="kw">wrap_data</span>(<span class="dt">cell_ids =</span> <span class="kw">rownames</span>(expression)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-14" title="14"><span class="st">    </span>dynwrap<span class="op">::</span><span class="kw">add_linear_trajectory</span>(<span class="dt">pseudotime =</span> pseudotime)</a>
+<a class="sourceLine" id="cb3-15" title="15">}</a></code></pre></div>
 <p>This function returns a trajectory object as described in <a href="../create_ti_method_wrappers">create a trajectory</a>. You may also add other relevant information to this output, often some timing checkpoints (<code>add_timings</code>), dimensionality reduction (<code>add_dimred</code>) or a cell clustering (<code>add_grouping</code>). Check out the <a href="https://dynverse.org/reference/dynwrap">reference</a> for an overview or <a href="https://github.com/dynverse/dynwrap">post an issue or pull request</a> if you want a type of output to be added.</p>
 </div>
 <div id="testing-it-out" class="section level2">
 <h2>Testing it out</h2>
 <p>To wrap the method, use <code>create_ti_method_r</code> with the definition and run function. At this stage you can also define some R packages that have to be installed or loaded.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">ti_comp1 &lt;-<span class="st"> </span><span class="kw">create_ti_method_r</span>(definition, run_fun, <span class="dt">package_loaded =</span> <span class="st">&quot;dplyr&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">ti_comp1 &lt;-<span class="st"> </span><span class="kw">create_ti_method_r</span>(definition, run_fun, <span class="dt">package_loaded =</span> <span class="st">&quot;dplyr&quot;</span>)</a></code></pre></div>
 <p>This function will return another function that can be used to change any parameters when running the method. This function is also useful to document any parameters when included in an R package.</p>
 <p>That’s it, let’s try it out:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">dataset &lt;-<span class="st"> </span>dynwrap<span class="op">::</span>example_dataset</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">trajectory &lt;-<span class="st"> </span><span class="kw">infer_trajectory</span>(dataset, <span class="kw">ti_comp1</span>())</a></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="cf">if</span> (<span class="kw">requireNamespace</span>(<span class="st">&quot;dynplot&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">  dynplot<span class="op">::</span><span class="kw">plot_dimred</span>(trajectory, <span class="dt">color_cells =</span> <span class="st">&quot;pseudotime&quot;</span> , <span class="dt">expression_source =</span> <span class="kw">as.matrix</span>(dataset<span class="op">$</span>expression))</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">}</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">dataset &lt;-<span class="st"> </span>dynwrap<span class="op">::</span>example_dataset</a>
+<a class="sourceLine" id="cb5-2" title="2">trajectory &lt;-<span class="st"> </span><span class="kw">infer_trajectory</span>(dataset, <span class="kw">ti_comp1</span>())</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="cf">if</span> (<span class="kw">requireNamespace</span>(<span class="st">&quot;dynplot&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {</a>
+<a class="sourceLine" id="cb6-2" title="2">  dynplot<span class="op">::</span><span class="kw">plot_dimred</span>(trajectory, <span class="dt">color_cells =</span> <span class="st">&quot;pseudotime&quot;</span> , <span class="dt">expression_source =</span> <span class="kw">as.matrix</span>(dataset<span class="op">$</span>expression))</a>
+<a class="sourceLine" id="cb6-3" title="3">}</a></code></pre></div>
 </div>
 <div id="making-your-method-available-for-other-users" class="section level2">
 <h2>Making your method available for other users</h2>
 <p>The easiest way to make this method available to others is to put it in an <a href="http://r-pkgs.had.co.nz/">R package which exports the <code>ti_*</code> function</a>. Here you can also provide documentation using roxygen2. The parameters can be automatically documented from the information provided in the description using <code>@eval dynwrap::generate_parameter_documentation(definition)</code> (adapt the name of definition if necessary).</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">#' Infer a trajectory from the first principal component</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#' </span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#' @eval dynwrap::generate_parameter_documentation(definition)</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#' </span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#' @import dplyr</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#' @export</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#' </span></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#' @examples</span></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#' dataset &lt;- dynwrap::example_dataset</span></a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#' model &lt;- dynwrap::infer_trajectory(dataset, ti_comp1())</span></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">ti_comp1 &lt;-<span class="st"> </span><span class="kw">create_ti_method_r</span>(definition, run_fun)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co">#&#39; Infer a trajectory from the first principal component</span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="co">#&#39; </span></a>
+<a class="sourceLine" id="cb7-3" title="3"><span class="co">#&#39; @eval dynwrap::generate_parameter_documentation(definition)</span></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="co">#&#39; </span></a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="co">#&#39; @import dplyr</span></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="co">#&#39; @export</span></a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="co">#&#39; </span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="co">#&#39; @examples</span></a>
+<a class="sourceLine" id="cb7-9" title="9"><span class="co">#&#39; dataset &lt;- dynwrap::example_dataset</span></a>
+<a class="sourceLine" id="cb7-10" title="10"><span class="co">#&#39; model &lt;- dynwrap::infer_trajectory(dataset, ti_comp1())</span></a>
+<a class="sourceLine" id="cb7-11" title="11">ti_comp1 &lt;-<span class="st"> </span><span class="kw">create_ti_method_r</span>(definition, run_fun)</a></code></pre></div>
 <p>The parameter documentation will look like follows:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">generate_parameter_documentation</span>(definition)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">generate_parameter_documentation</span>(definition)</a></code></pre></div>
 <pre><code>## [1] &quot;@param component The nth component to use. Domain: U(1, 10). Default: 1. Format: integer.&quot;</code></pre>
 <p>We also strongly encourage you to include within our collection of TI methods available in the <a href="https://github.com/dynverse/dynmethods">dynmethods R package</a>. Feel free to <a href="https://github.com/dynverse/dynmethods/labels/new%20method">create an issue</a> or <a href="https://github.com/dynverse/dynmethods/pulls">send us a pull request</a>.</p>
 </div>

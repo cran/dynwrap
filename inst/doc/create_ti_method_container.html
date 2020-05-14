@@ -8,12 +8,12 @@
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Wouter Saelens" />
 <meta name="author" content="Robrecht Cannoodt" />
 
-<meta name="date" content="2020-03-09" />
+<meta name="date" content="2020-05-14" />
 
 <title>Creating a TI method: Container</title>
 
@@ -38,7 +38,7 @@ a.sourceLine { text-indent: -1em; padding-left: 1em; }
 pre.numberSource a.sourceLine
   { position: relative; left: -4em; }
 pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+  { content: attr(title);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
     border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
@@ -118,9 +118,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -289,7 +286,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -305,70 +303,70 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <h1 class="title toc-ignore">Creating a TI method: Container</h1>
 <h4 class="author">Wouter Saelens</h4>
 <h4 class="author">Robrecht Cannoodt</h4>
-<h4 class="date">2020-03-09</h4>
+<h4 class="date">2020-05-14</h4>
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(dynwrap)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(dplyr)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(dynwrap)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(dplyr)</a></code></pre></div>
 <p>Once <a href="../create_ti_method_script">you have wrapped a method using a script and definition</a>, all you need to share your method is a <em>Dockerfile</em> which lists all the dependencies that need to be installed.</p>
 <p>We’ll work with the following <em>definition.yml</em>:</p>
 <div class="filename">
 definition.yml
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="fu">method:</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">  <span class="fu">id:</span><span class="at"> comp_1</span></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="fu">parameters:</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="kw">-</span> <span class="fu">id:</span><span class="at"> component</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">    <span class="fu">default:</span><span class="at"> 1</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">    <span class="fu">type:</span><span class="at"> integer</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">    <span class="fu">distribution:</span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">      <span class="fu">type:</span><span class="at"> uniform</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">      <span class="fu">lower:</span><span class="at"> 1</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">      <span class="fu">upper:</span><span class="at"> 10</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">    <span class="fu">description:</span><span class="at"> The nth component to use</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="fu">wrapper:</span></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15">  <span class="fu">input_required:</span><span class="at"> expression</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16">  <span class="fu">input_optional:</span><span class="at"> start_id</span></a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb2-1" title="1"><span class="fu">method:</span></a>
+<a class="sourceLine" id="cb2-2" title="2">  <span class="fu">id:</span><span class="at"> comp_1</span></a>
+<a class="sourceLine" id="cb2-3" title="3"></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="fu">parameters:</span></a>
+<a class="sourceLine" id="cb2-5" title="5">  <span class="kw">-</span> <span class="fu">id:</span><span class="at"> component</span></a>
+<a class="sourceLine" id="cb2-6" title="6">    <span class="fu">default:</span><span class="at"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-7" title="7">    <span class="fu">type:</span><span class="at"> integer</span></a>
+<a class="sourceLine" id="cb2-8" title="8">    <span class="fu">distribution:</span></a>
+<a class="sourceLine" id="cb2-9" title="9">      <span class="fu">type:</span><span class="at"> uniform</span></a>
+<a class="sourceLine" id="cb2-10" title="10">      <span class="fu">lower:</span><span class="at"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb2-11" title="11">      <span class="fu">upper:</span><span class="at"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb2-12" title="12">    <span class="fu">description:</span><span class="at"> The nth component to use</span></a>
+<a class="sourceLine" id="cb2-13" title="13"></a>
+<a class="sourceLine" id="cb2-14" title="14"><span class="fu">wrapper:</span></a>
+<a class="sourceLine" id="cb2-15" title="15">  <span class="fu">input_required:</span><span class="at"> expression</span></a>
+<a class="sourceLine" id="cb2-16" title="16">  <span class="fu">input_optional:</span><span class="at"> start_id</span></a></code></pre></div>
 <p>and <em>run.py</em>:</p>
 <div class="filename">
 run.py
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co">#!/usr/bin/env python</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="im">import</span> dynclipy</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">dataset <span class="op">=</span> dynclipy.main()</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="im">import</span> pandas <span class="im">as</span> pd</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="im">import</span> sklearn.decomposition</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co"># infer trajectory</span></a>
-<a class="sourceLine" id="cb3-10" data-line-number="10">pca <span class="op">=</span> sklearn.decomposition.PCA()</a>
-<a class="sourceLine" id="cb3-11" data-line-number="11">dimred <span class="op">=</span> pca.fit_transform(dataset[<span class="st">'expression'</span>])</a>
-<a class="sourceLine" id="cb3-12" data-line-number="12">pseudotime <span class="op">=</span> pd.Series(</a>
-<a class="sourceLine" id="cb3-13" data-line-number="13">  dimred[:, dataset[<span class="st">'parameters'</span>][<span class="st">'component'</span>]<span class="op">-</span><span class="dv">1</span>], </a>
-<a class="sourceLine" id="cb3-14" data-line-number="14">  index <span class="op">=</span> dataset[<span class="st">'expression'</span>].index</a>
-<a class="sourceLine" id="cb3-15" data-line-number="15">)</a>
-<a class="sourceLine" id="cb3-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb3-17" data-line-number="17"><span class="co"># build trajectory</span></a>
-<a class="sourceLine" id="cb3-18" data-line-number="18">trajectory <span class="op">=</span> dynclipy.wrap_data(cell_ids <span class="op">=</span> dataset[<span class="st">'expression'</span>].index)</a>
-<a class="sourceLine" id="cb3-19" data-line-number="19">trajectory.add_linear_trajectory(pseudotime <span class="op">=</span> pseudotime)</a>
-<a class="sourceLine" id="cb3-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb3-21" data-line-number="21"><span class="co"># save output</span></a>
-<a class="sourceLine" id="cb3-22" data-line-number="22">trajectory.write_output(dataset[<span class="st">'output'</span>])</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb3-1" title="1"><span class="co">#!/usr/bin/env python</span></a>
+<a class="sourceLine" id="cb3-2" title="2"></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="im">import</span> dynclipy</a>
+<a class="sourceLine" id="cb3-4" title="4">dataset <span class="op">=</span> dynclipy.main()</a>
+<a class="sourceLine" id="cb3-5" title="5"></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="im">import</span> pandas <span class="im">as</span> pd</a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="im">import</span> sklearn.decomposition</a>
+<a class="sourceLine" id="cb3-8" title="8"></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="co"># infer trajectory</span></a>
+<a class="sourceLine" id="cb3-10" title="10">pca <span class="op">=</span> sklearn.decomposition.PCA()</a>
+<a class="sourceLine" id="cb3-11" title="11">dimred <span class="op">=</span> pca.fit_transform(dataset[<span class="st">&#39;expression&#39;</span>])</a>
+<a class="sourceLine" id="cb3-12" title="12">pseudotime <span class="op">=</span> pd.Series(</a>
+<a class="sourceLine" id="cb3-13" title="13">  dimred[:, dataset[<span class="st">&#39;parameters&#39;</span>][<span class="st">&#39;component&#39;</span>]<span class="op">-</span><span class="dv">1</span>], </a>
+<a class="sourceLine" id="cb3-14" title="14">  index <span class="op">=</span> dataset[<span class="st">&#39;expression&#39;</span>].index</a>
+<a class="sourceLine" id="cb3-15" title="15">)</a>
+<a class="sourceLine" id="cb3-16" title="16"></a>
+<a class="sourceLine" id="cb3-17" title="17"><span class="co"># build trajectory</span></a>
+<a class="sourceLine" id="cb3-18" title="18">trajectory <span class="op">=</span> dynclipy.wrap_data(cell_ids <span class="op">=</span> dataset[<span class="st">&#39;expression&#39;</span>].index)</a>
+<a class="sourceLine" id="cb3-19" title="19">trajectory.add_linear_trajectory(pseudotime <span class="op">=</span> pseudotime)</a>
+<a class="sourceLine" id="cb3-20" title="20"></a>
+<a class="sourceLine" id="cb3-21" title="21"><span class="co"># save output</span></a>
+<a class="sourceLine" id="cb3-22" title="22">trajectory.write_output(dataset[<span class="st">&#39;output&#39;</span>])</a></code></pre></div>
 <p>Make sure it is executable</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="fu">chmod</span> +x run.py</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" title="1"><span class="fu">chmod</span> +x run.py</a></code></pre></div>
 <p>Assuming that the <em>definition.yml</em> and <em>run.R</em> are located in current directory, a minimal <em>Dockerfile</em> would look like:</p>
 <div class="filename">
 Dockerfile
 </div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode dockerfile"><code class="sourceCode dockerfile"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">FROM</span> dynverse/dynwrappy:v0.1.0</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw">COPY</span> definition.yml run.py /code/</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="kw">ENTRYPOINT</span> [<span class="st">&quot;/code/run.py&quot;</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode dockerfile"><code class="sourceCode dockerfile"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">FROM</span> dynverse/dynwrappy_tester:latest</a>
+<a class="sourceLine" id="cb5-2" title="2"></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="kw">COPY</span> definition.yml run.py /code/</a>
+<a class="sourceLine" id="cb5-4" title="4"></a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="kw">ENTRYPOINT</span> [<span class="st">&quot;/code/run.py&quot;</span>]</a></code></pre></div>
 <p><code>dynverse/dynwrappy</code> is here the base image, which contains the latest version of R, python, dynwrap, dyncli and most tidyverse dependencies. For R methods, you can use the <code>dynverse/dynwrapr</code> base. While not required, it’s recommended to start from these base images, because dyncli provides an interface to run each method using the docker container from the command line. <a href="../create_ti_method_script">As discussed before</a>, wrapping is also a lot easier using dynwrap.</p>
 <div class="notices tip">
 <p>For reproducibility, it’s best to specify the tag of the base image. You can find this these tags on dockerhub: <a href="https://hub.docker.com/r/dynverse/dynwrapr/tags" class="uri">https://hub.docker.com/r/dynverse/dynwrapr/tags</a>.</p>
@@ -379,18 +377,18 @@ Dockerfile
 <p>Do not specify this entrypoint using <code>ENTRYPOINT /code/run.R</code>, because this will create issues with specifying command-line arguments.</p>
 </div>
 <p>That’s it! Assuming that you have a functioning docker installation, you can build this container using</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="ex">docker</span> build -t my_ti_method .</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" title="1"><span class="ex">docker</span> build -t my_ti_method .</a></code></pre></div>
 <div id="testing-it-out" class="section level2">
 <h2>Testing it out</h2>
 <p>This method can now be loaded inside R using dynwrap</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">method &lt;-<span class="st"> </span><span class="kw">create_ti_method_container</span>(<span class="st">&quot;my_ti_method&quot;</span>)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">dataset &lt;-<span class="st"> </span>dynwrap<span class="op">::</span>example_dataset</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">trajectory &lt;-<span class="st"> </span><span class="kw">infer_trajectory</span>(dataset, <span class="kw">method</span>(), <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">method &lt;-<span class="st"> </span><span class="kw">create_ti_method_container</span>(<span class="st">&quot;my_ti_method&quot;</span>)</a>
+<a class="sourceLine" id="cb7-2" title="2">dataset &lt;-<span class="st"> </span>dynwrap<span class="op">::</span>example_dataset</a>
+<a class="sourceLine" id="cb7-3" title="3">trajectory &lt;-<span class="st"> </span><span class="kw">infer_trajectory</span>(dataset, <span class="kw">method</span>(), <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>If you have dynplot installed, you can also plot the trajectory:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># install dynplot to plot the output</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="cf">if</span> (<span class="kw">requireNamespace</span>(<span class="st">&quot;dynplot&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">  dynplot<span class="op">::</span><span class="kw">plot_dimred</span>(trajectory, <span class="dt">color_cells =</span> <span class="st">&quot;pseudotime&quot;</span> , <span class="dt">expression_source =</span> <span class="kw">as.matrix</span>(dataset<span class="op">$</span>expression))</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">}</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="co"># install dynplot to plot the output</span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="cf">if</span> (<span class="kw">requireNamespace</span>(<span class="st">&quot;dynplot&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>)) {</a>
+<a class="sourceLine" id="cb8-3" title="3">  dynplot<span class="op">::</span><span class="kw">plot_dimred</span>(trajectory, <span class="dt">color_cells =</span> <span class="st">&quot;pseudotime&quot;</span> , <span class="dt">expression_source =</span> <span class="kw">as.matrix</span>(dataset<span class="op">$</span>expression))</a>
+<a class="sourceLine" id="cb8-4" title="4">}</a></code></pre></div>
 <p>Congratulations! You now have a TI method that can be easily installed anywhere without dependency issues, and that can be included within the whole dynverse pipeline.</p>
 <p>So what’s left?</p>
 </div>
@@ -403,21 +401,21 @@ Dockerfile
 <div class="filename">
 example.sh
 </div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">#!/usr/bin/env Rscript</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3">dataset &lt;-<span class="st"> </span>dynwrap<span class="op">::</span>example_dataset</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5">file &lt;-<span class="st"> </span><span class="kw">commandArgs</span>(<span class="dt">trailingOnly =</span> <span class="ot">TRUE</span>)[[<span class="dv">1</span>]]</a>
-<a class="sourceLine" id="cb9-6" data-line-number="6">dynutils<span class="op">::</span><span class="kw">write_h5</span>(dataset, file)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="co">#!/usr/bin/env Rscript</span></a>
+<a class="sourceLine" id="cb9-2" title="2"></a>
+<a class="sourceLine" id="cb9-3" title="3">dataset &lt;-<span class="st"> </span>dynwrap<span class="op">::</span>example_dataset</a>
+<a class="sourceLine" id="cb9-4" title="4"></a>
+<a class="sourceLine" id="cb9-5" title="5">file &lt;-<span class="st"> </span><span class="kw">commandArgs</span>(<span class="dt">trailingOnly =</span> <span class="ot">TRUE</span>)[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb9-6" title="6">dynutils<span class="op">::</span><span class="kw">write_h5</span>(dataset, file)</a></code></pre></div>
 <div class="notices tip">
 <p>You can of course provide your own example data here, but make sure it doesn’t take too long to generate, and not too long for the TI method run.</p>
 <p>You can also add extra parameters and a fixed seed to the example data, e.g.: <code>dataset$seed &lt;- 1</code> and <code>dataset$parameters &lt;- list(component = 42)</code></p>
 </div>
 <p>Now run the example script and test it:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="fu">chmod</span> +x example.sh</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="ex">./example.sh</span> example.h5</a></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">dataset &lt;-<span class="st"> </span>dynutils<span class="op">::</span><span class="kw">read_h5</span>(<span class="st">&quot;example.h5&quot;</span>)</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2">trajectory &lt;-<span class="st"> </span><span class="kw">infer_trajectory</span>(dataset, <span class="kw">method</span>())</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb10-1" title="1"><span class="fu">chmod</span> +x example.sh</a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="ex">./example.sh</span> example.h5</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">dataset &lt;-<span class="st"> </span>dynutils<span class="op">::</span><span class="kw">read_h5</span>(<span class="st">&quot;example.h5&quot;</span>)</a>
+<a class="sourceLine" id="cb11-2" title="2">trajectory &lt;-<span class="st"> </span><span class="kw">infer_trajectory</span>(dataset, <span class="kw">method</span>())</a></code></pre></div>
 </div>
 <div id="continuous-integration" class="section level3">
 <h3>Continuous integration</h3>
