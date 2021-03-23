@@ -2,7 +2,7 @@
 library(dynwrap)
 
 # dyncli is not installed on travis or CRAN, so don't run some parts of the vignette there
-NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+NOT_CRAN <- Sys.getenv("NOT_CRAN") == "" || identical(tolower(Sys.getenv("NOT_CRAN")), "true")
 NOT_TRAVIS <- !identical(tolower(Sys.getenv("TRAVIS")), "true")
 
 ## -----------------------------------------------------------------------------
@@ -48,10 +48,12 @@ ti_comp1 <- create_ti_method_r(definition, run_fun, package_loaded = "dplyr")
 dataset <- dynwrap::example_dataset
 trajectory <- infer_trajectory(dataset, ti_comp1())
 
-## ---- eval=NOT_CRAN && NOT_TRAVIS---------------------------------------------
-#  if (requireNamespace("dynplot", quietly = TRUE)) {
-#    dynplot::plot_dimred(trajectory, color_cells = "pseudotime" , expression_source = as.matrix(dataset$expression))
-#  }
+## ---- eval=FALSE--------------------------------------------------------------
+#  library(dynplot)
+#  # for now, install from github using:
+#  # remotes::install_github("dynverse/dynplot")
+#  plot_graph(trajectory)
+#  plot_heatmap(trajectory, expression_source = dataset$expression)
 
 ## -----------------------------------------------------------------------------
 #' Infer a trajectory from the first principal component
