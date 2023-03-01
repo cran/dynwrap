@@ -13,7 +13,7 @@
 <meta name="author" content="Wouter Saelens" />
 <meta name="author" content="Robrecht Cannoodt" />
 
-<meta name="date" content="2021-03-23" />
+<meta name="date" content="2023-03-01" />
 
 <title>Creating a TI method: Container</title>
 
@@ -29,6 +29,7 @@
     </style>
 
 
+
 <style type="text/css">
   code {
     white-space: pre;
@@ -41,6 +42,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -109,13 +111,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -142,7 +151,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1 class="title toc-ignore">Creating a TI method: Container</h1>
 <h4 class="author">Wouter Saelens</h4>
 <h4 class="author">Robrecht Cannoodt</h4>
-<h4 class="date">2021-03-23</h4>
+<h4 class="date">2023-03-01</h4>
 
 
 
@@ -221,21 +230,20 @@ Dockerfile
 <h2>Testing it out</h2>
 <p>This method can now be loaded inside R using dynwrap</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>method <span class="ot">&lt;-</span> <span class="fu">create_ti_method_container</span>(<span class="st">&quot;my_ti_method&quot;</span>)</span></code></pre></div>
-<pre><code>## Warning in readLines(path_local): incomplete final line found on &#39;/tmp/
-## RtmpDSWRR7/file261d8c13bee49d//tmpfile&#39;</code></pre>
+<pre><code>## Warning in readLines(path_local): incomplete final line found on
+## &#39;/tmp/Rtmp11xxq4/file16aa3ef8d0d3e//tmpfile&#39;</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> dynwrap<span class="sc">::</span>example_dataset</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>trajectory <span class="ot">&lt;-</span> <span class="fu">infer_trajectory</span>(dataset, <span class="fu">method</span>(), <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>## Executing &#39;comp_1&#39; on &#39;example&#39;
 ## With parameters: list(component = 1L)
 ## inputs: expression
-## priors :</code></pre>
-<pre><code>## Loading required namespace: hdf5r</code></pre>
-<pre><code>## Input saved to /tmp/RtmpDSWRR7/file261d8c1ee593ba/ti
+## priors : 
+## Input saved to /tmp/Rtmp11xxq4/file16aa3e798a4fb6/ti
 ## Running method using babelwhale
-## Running /usr/bin/docker run --name 20210323_230531__container__GVOTvvJdZn -e \
+## Running /usr/bin/docker run --name 20230301_162218__container__0e0sdhB4jR -e \
 ##   &#39;TMPDIR=/tmp2&#39; --workdir /ti/workspace -v \
-##   &#39;/tmp/RtmpDSWRR7/file261d8c1ee593ba/ti:/ti&#39; -v \
-##   &#39;/tmp/RtmpDSWRR7/file261d8c1b1f80bb/tmp:/tmp2&#39; my_ti_method --dataset \
+##   &#39;/tmp/Rtmp11xxq4/file16aa3e798a4fb6/ti:/ti&#39; -v \
+##   &#39;/tmp/Rtmp11xxq4/file16aa3e5fd83172/tmp:/tmp2&#39; my_ti_method --dataset \
 ##   /ti/input.h5 --output /ti/output.h5
 ## /usr/local/lib/python3.8/site-packages/pandas/compat/__init__.py:117: UserWarning: Could not import the lzma module. Your installed Python is incomplete. Attempting to use lzma compression will result in a RuntimeError.
 ##   warnings.warn(msg)
@@ -249,14 +257,14 @@ Dockerfile
 ## 
 ## R[write to console]: 2: Column `input_id` has different attributes on LHS and RHS of join 
 ## 
-## Output saved to /tmp/RtmpDSWRR7/file261d8c1ee593ba/ti/output.h5
+## Output saved to /tmp/Rtmp11xxq4/file16aa3e798a4fb6/ti/output.h5
 ## Attempting to read in output with hdf5</code></pre>
 <p>If you have dynplot installed, you can also plot the trajectory:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dynplot)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># for now, install from github using:</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github(&quot;dynverse/dynplot&quot;)</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_graph</span>(trajectory)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_heatmap</span>(trajectory, <span class="at">expression_source =</span> dataset<span class="sc">$</span>expression)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dynplot)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># for now, install from github using:</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github(&quot;dynverse/dynplot&quot;)</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_graph</span>(trajectory)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_heatmap</span>(trajectory, <span class="at">expression_source =</span> dataset<span class="sc">$</span>expression)</span></code></pre></div>
 <p>Congratulations! You now have a TI method that can be easily installed anywhere without dependency issues, and that can be included within the whole dynverse pipeline.</p>
 <p>So what’s left?</p>
 </div>
@@ -269,26 +277,25 @@ Dockerfile
 <div class="filename">
 example.sh
 </div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env Rscript</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> dynwrap<span class="sc">::</span>example_dataset</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">commandArgs</span>(<span class="at">trailingOnly =</span> <span class="cn">TRUE</span>)[[<span class="dv">1</span>]]</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>dynutils<span class="sc">::</span><span class="fu">write_h5</span>(dataset, file)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env Rscript</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> dynwrap<span class="sc">::</span>example_dataset</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">commandArgs</span>(<span class="at">trailingOnly =</span> <span class="cn">TRUE</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>dynutils<span class="sc">::</span><span class="fu">write_h5</span>(dataset, file)</span></code></pre></div>
 <div class="notices tip">
 <p>You can of course provide your own example data here, but make sure it doesn’t take too long to generate, and not too long for the TI method run.</p>
 <p>You can also add extra parameters and a fixed seed to the example data, e.g.: <code>dataset$seed &lt;- 1</code> and <code>dataset$parameters &lt;- list(component = 42)</code></p>
 </div>
 <p>Now run the example script and test it:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x example.sh</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./example.sh</span> example.h5</span></code></pre></div>
-<pre><code>## Loading required namespace: hdf5r</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> dynutils<span class="sc">::</span><span class="fu">read_h5</span>(<span class="st">&quot;example.h5&quot;</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>trajectory <span class="ot">&lt;-</span> <span class="fu">infer_trajectory</span>(dataset, <span class="fu">method</span>())</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x example.sh</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./example.sh</span> example.h5</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> dynutils<span class="sc">::</span><span class="fu">read_h5</span>(<span class="st">&quot;example.h5&quot;</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>trajectory <span class="ot">&lt;-</span> <span class="fu">infer_trajectory</span>(dataset, <span class="fu">method</span>())</span></code></pre></div>
 </div>
 <div id="continuous-integration" class="section level3">
 <h3>Continuous integration</h3>
-<p>To automate the testing (and building) of containers, you’ll have to use continuous integration. We use <a href="https://travis-ci.com">travis-ci</a> for this, a free service for open-source projects. Because the exact code to use this continuous integration requires some manual steps, we suggest you create an issue at <a href="https://github.com/dynverse/dynmethods/issues/new">dynmethods</a> so that we can help you further. If you’re really adventurous, you can have a look at some of our <em>GitHub Actions Workflow</em> files, e.g.: <a href="https://github.com/dynverse/ti_paga/blob/master/.github/workflows/make.yml">https://github.com/dynverse/ti_paga/blob/master/.github/workflows/make.yml</a>.</p>
+<p>To automate the testing (and building) of containers, you’ll have to use continuous integration. Because the exact code to use this continuous integration requires some manual steps, we suggest you create an issue at <a href="https://github.com/dynverse/dynmethods/issues/new">dynmethods</a> so that we can help you further. Here is an example of one of our CI scripts: <a href="https://github.com/dynverse/ti_paga/blob/master/.github/workflows/make.yml">https://github.com/dynverse/ti_paga/blob/master/.github/workflows/make.yml</a>.</p>
 <p>Once the continuous integration works, you’re method is ready to be included in <a href="https://github.com/dynverse/dynmethods/issues/new">dynmethods</a>!</p>
 </div>
 </div>

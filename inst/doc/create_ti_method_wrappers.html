@@ -13,7 +13,7 @@
 <meta name="author" content="Wouter Saelens" />
 <meta name="author" content="Robrecht Cannoodt" />
 
-<meta name="date" content="2021-03-23" />
+<meta name="date" content="2023-03-01" />
 
 <title>Creating a TI method: Wrapping trajectories</title>
 
@@ -29,6 +29,7 @@
     </style>
 
 
+
 <style type="text/css">
   code {
     white-space: pre;
@@ -41,6 +42,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -109,13 +111,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -142,7 +151,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1 class="title toc-ignore">Creating a TI method: Wrapping trajectories</h1>
 <h4 class="author">Wouter Saelens</h4>
 <h4 class="author">Robrecht Cannoodt</h4>
-<h4 class="date">2021-03-23</h4>
+<h4 class="date">2023-03-01</h4>
 
 
 
@@ -152,7 +161,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>Milestone network, contains information of connections between milestones</li>
 </ul>
-<pre><code>## # A tibble: 5 x 4
+<pre><code>## # A tibble: 5 × 4
 ##   from        to          length directed
 ##   &lt;chr&gt;       &lt;chr&gt;        &lt;dbl&gt; &lt;lgl&gt;   
 ## 1 Milestone_A Milestone_B    1   FALSE   
@@ -163,39 +172,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>Milestone percentages, contains how close a cell is to a milestone. For each cell, the percentages sum to one.</li>
 </ul>
-<pre><code>## # A tibble: 10 x 3
+<pre><code>## # A tibble: 10 × 3
 ##    cell_id milestone_id percentage
 ##    &lt;chr&gt;   &lt;chr&gt;             &lt;dbl&gt;
-##  1 Cell_a  Milestone_B      0.552 
-##  2 Cell_a  Milestone_C      0.448 
-##  3 Cell_b  Milestone_C      0.0525
-##  4 Cell_b  Milestone_E      0.948 
-##  5 Cell_c  Milestone_B      0.384 
-##  6 Cell_c  Milestone_C      0.616 
-##  7 Cell_d  Milestone_B      0.0166
-##  8 Cell_d  Milestone_D      0.983 
-##  9 Cell_e  Milestone_C      0.0624
-## 10 Cell_e  Milestone_F      0.938</code></pre>
+##  1 Cell_a  Milestone_C       0.393
+##  2 Cell_a  Milestone_F       0.607
+##  3 Cell_b  Milestone_B       0.492
+##  4 Cell_b  Milestone_C       0.508
+##  5 Cell_c  Milestone_C       0.653
+##  6 Cell_c  Milestone_E       0.347
+##  7 Cell_d  Milestone_A       0.686
+##  8 Cell_d  Milestone_B       0.314
+##  9 Cell_e  Milestone_C       0.210
+## 10 Cell_e  Milestone_F       0.790</code></pre>
 <ul>
 <li>Progressions, an alternative to milestone percentages, also contains the positions of each cell but now based on its progression through an edge</li>
 </ul>
-<pre><code>## # A tibble: 10 x 4
+<pre><code>## # A tibble: 10 × 4
 ##    cell_id from        to          percentage
 ##    &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;            &lt;dbl&gt;
-##  1 Cell_a  Milestone_B Milestone_C      0.448
-##  2 Cell_b  Milestone_C Milestone_E      0.948
-##  3 Cell_c  Milestone_B Milestone_C      0.616
-##  4 Cell_d  Milestone_B Milestone_D      0.983
-##  5 Cell_e  Milestone_C Milestone_F      0.938
-##  6 Cell_f  Milestone_C Milestone_E      0.119
-##  7 Cell_g  Milestone_C Milestone_F      0.880
-##  8 Cell_h  Milestone_C Milestone_F      0.265
-##  9 Cell_i  Milestone_B Milestone_C      0.148
-## 10 Cell_j  Milestone_C Milestone_E      0.669</code></pre>
+##  1 Cell_a  Milestone_C Milestone_F     0.607 
+##  2 Cell_b  Milestone_B Milestone_C     0.508 
+##  3 Cell_c  Milestone_C Milestone_E     0.347 
+##  4 Cell_d  Milestone_A Milestone_B     0.314 
+##  5 Cell_e  Milestone_C Milestone_F     0.790 
+##  6 Cell_f  Milestone_B Milestone_C     0.729 
+##  7 Cell_g  Milestone_C Milestone_F     0.837 
+##  8 Cell_h  Milestone_B Milestone_C     0.0851
+##  9 Cell_i  Milestone_B Milestone_C     0.462 
+## 10 Cell_j  Milestone_B Milestone_C     0.0415</code></pre>
 <ul>
 <li>Divergence regions, contain the information on &gt;=3 milestones connected to eachother. This is optional.</li>
 </ul>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##   divergence_id milestone_id is_start
 ##   &lt;chr&gt;         &lt;chr&gt;        &lt;lgl&gt;   
 ## 1 Divergence_1  Milestone_B  TRUE    
