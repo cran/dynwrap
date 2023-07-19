@@ -8,7 +8,10 @@
 
 \item{dataset}{A dataset created by \code{\link[=wrap_data]{wrap_data()}} or \code{\link[=wrap_expression]{wrap_expression()}}}
 }
+\value{
+Internal documentation
+}
 \description{
-Common param
+These parameters are commonly used in dynwrap.
 }
 \keyword{internal}

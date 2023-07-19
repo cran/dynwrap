@@ -5,7 +5,7 @@ Description: Provides functionality to infer trajectories from single-cell data,
   represent them into a common format, and adapt them. Other biological information
   can also be added, such as cellular grouping, RNA velocity and annotation.
   Saelens et al. (2019) <doi:10.1038/s41587-019-0071-9>.
-Version: 1.2.3
+Version: 1.2.4
 Authors@R: c(
     person(
       "Robrecht", 
@@ -36,10 +36,10 @@ Suggests: covr, dyndimred, hdf5r, knitr, pkgload, ranger, rmarkdown,
         testthat
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2023-03-01 15:22:29 UTC; rcannood
+Packaged: 2023-07-18 10:01:02 UTC; rcannood
 Author: Robrecht Cannoodt [aut, cre] (<https://orcid.org/0000-0003-3641-729X>,
     rcannood),
   Wouter Saelens [aut] (<https://orcid.org/0000-0002-7114-6248>, zouter)
 Maintainer: Robrecht Cannoodt <rcannood@gmail.com>
 Repository: CRAN
-Date/Publication: 2023-03-01 17:10:02 UTC
+Date/Publication: 2023-07-19 09:20:02 UTC

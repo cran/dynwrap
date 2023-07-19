@@ -13,7 +13,7 @@
 <meta name="author" content="Wouter Saelens" />
 <meta name="author" content="Robrecht Cannoodt" />
 
-<meta name="date" content="2023-03-01" />
+<meta name="date" content="2023-07-18" />
 
 <title>Creating a TI method: Container</title>
 
@@ -151,7 +151,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1 class="title toc-ignore">Creating a TI method: Container</h1>
 <h4 class="author">Wouter Saelens</h4>
 <h4 class="author">Robrecht Cannoodt</h4>
-<h4 class="date">2023-03-01</h4>
+<h4 class="date">2023-07-18</h4>
 
 
 
@@ -231,19 +231,19 @@ Dockerfile
 <p>This method can now be loaded inside R using dynwrap</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>method <span class="ot">&lt;-</span> <span class="fu">create_ti_method_container</span>(<span class="st">&quot;my_ti_method&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning in readLines(path_local): incomplete final line found on
-## &#39;/tmp/Rtmp11xxq4/file16aa3ef8d0d3e//tmpfile&#39;</code></pre>
+## &#39;/tmp/RtmpmzNIJH/file6edd42f75373//tmpfile&#39;</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> dynwrap<span class="sc">::</span>example_dataset</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>trajectory <span class="ot">&lt;-</span> <span class="fu">infer_trajectory</span>(dataset, <span class="fu">method</span>(), <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>## Executing &#39;comp_1&#39; on &#39;example&#39;
 ## With parameters: list(component = 1L)
 ## inputs: expression
 ## priors : 
-## Input saved to /tmp/Rtmp11xxq4/file16aa3e798a4fb6/ti
+## Input saved to /tmp/RtmpmzNIJH/file6edd201e1612/ti
 ## Running method using babelwhale
-## Running /usr/bin/docker run --name 20230301_162218__container__0e0sdhB4jR -e \
+## Running /usr/bin/docker run --name 20230718_120045__container__ew3eUWifj9 -e \
 ##   &#39;TMPDIR=/tmp2&#39; --workdir /ti/workspace -v \
-##   &#39;/tmp/Rtmp11xxq4/file16aa3e798a4fb6/ti:/ti&#39; -v \
-##   &#39;/tmp/Rtmp11xxq4/file16aa3e5fd83172/tmp:/tmp2&#39; my_ti_method --dataset \
+##   &#39;/tmp/RtmpmzNIJH/file6edd201e1612/ti:/ti&#39; -v \
+##   &#39;/tmp/RtmpmzNIJH/file6edd357c57ee/tmp:/tmp2&#39; my_ti_method --dataset \
 ##   /ti/input.h5 --output /ti/output.h5
 ## /usr/local/lib/python3.8/site-packages/pandas/compat/__init__.py:117: UserWarning: Could not import the lzma module. Your installed Python is incomplete. Attempting to use lzma compression will result in a RuntimeError.
 ##   warnings.warn(msg)
@@ -257,7 +257,7 @@ Dockerfile
 ## 
 ## R[write to console]: 2: Column `input_id` has different attributes on LHS and RHS of join 
 ## 
-## Output saved to /tmp/Rtmp11xxq4/file16aa3e798a4fb6/ti/output.h5
+## Output saved to /tmp/RtmpmzNIJH/file6edd201e1612/ti/output.h5
 ## Attempting to read in output with hdf5</code></pre>
 <p>If you have dynplot installed, you can also plot the trajectory:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dynplot)</span>

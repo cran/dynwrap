@@ -1,3 +1,9 @@
+# dynwrap 1.2.4
+
+* Resubmission after babelwhale was removed from CRAN.
+
+* MINOR CHANGE: Added `@return` documentation to all functions.
+
 # dynwrap 1.2.3
 
 * MINOR CHANGE: Fixes to metadata (documentation, citation entry, broken links).

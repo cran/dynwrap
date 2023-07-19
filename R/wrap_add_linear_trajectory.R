@@ -11,6 +11,8 @@
 #'
 #' @inherit add_trajectory return
 #'
+#' @return A trajectory object
+#'
 #' @export
 #'
 #' @examples
