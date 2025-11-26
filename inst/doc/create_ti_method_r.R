@@ -48,12 +48,12 @@ ti_comp1 <- create_ti_method_r(definition, run_fun, package_loaded = "dplyr")
 dataset <- dynwrap::example_dataset
 trajectory <- infer_trajectory(dataset, ti_comp1())
 
-## ---- eval=FALSE--------------------------------------------------------------
-#  library(dynplot)
-#  # for now, install from github using:
-#  # remotes::install_github("dynverse/dynplot")
-#  plot_graph(trajectory)
-#  plot_heatmap(trajectory, expression_source = dataset$expression)
+## ----eval=FALSE---------------------------------------------------------------
+# library(dynplot)
+# # for now, install from github using:
+# # remotes::install_github("dynverse/dynplot")
+# plot_graph(trajectory)
+# plot_heatmap(trajectory, expression_source = dataset$expression)
 
 ## -----------------------------------------------------------------------------
 #' Infer a trajectory from the first principal component
