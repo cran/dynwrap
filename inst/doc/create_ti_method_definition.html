@@ -13,7 +13,7 @@
 <meta name="author" content="Wouter Saelens" />
 <meta name="author" content="Robrecht Cannoodt" />
 
-<meta name="date" content="2025-11-26" />
+<meta name="date" content="2026-03-31" />
 
 <title>Creating a TI method: Script</title>
 
@@ -342,7 +342,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">Creating a TI method: Script</h1>
 <h4 class="author">Wouter Saelens</h4>
 <h4 class="author">Robrecht Cannoodt</h4>
-<h4 class="date">2025-11-26</h4>
+<h4 class="date">2026-03-31</h4>
 
 
 
@@ -351,7 +351,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 external script. Because this does not provide any dependency
 management, this is not really useful for method end-users, but rather
 as a way to easily develop a TI method and to ultimately step up towards
-<a href="../create_ti_method_container">containerised wrapping</a>.</p>
+<a href="create_ti_method_container.html">containerised
+wrapping</a>.</p>
 <p>Similarly as a wrapper written in R, you’ll need to provide both a
 definition (= a <em>definition.yml</em>) and a way to run the methods (=
 a script).</p>
@@ -396,7 +397,8 @@ provide helper libraries for R and python: <a href="https://github.com/dynverse/
 <code>dataset &lt;- dyncli::main()</code> or
 <code>dataset = dynclipy.main()</code></li>
 <li>All you need to infer the trajectory</li>
-<li>Constructing the trajectory model using <a href="../create_ti_method_wrappers">any of the wrapping methods</a></li>
+<li>Constructing the trajectory model using <a href="create_ti_method_wrappers.html">any of the wrapping
+methods</a></li>
 <li>A call to dyncli(py) to write the data, such as
 <code>dyncli::write_output(trajectory)</code> or
 <code>trajectory.write_output()</code></li>
@@ -485,7 +487,8 @@ load in the input data, and code!</p>
 <h2>Making your method available for other users</h2>
 <p>Wrapping a method inside a script does not have any dependency
 management, and is therefore only meant for development purposes. To
-deploy your method to other users, check out the <a href="../create_ti_method_container">containerisation tutorial</a>!</p>
+deploy your method to other users, check out the <a href="create_ti_method_container.html">containerisation
+tutorial</a>!</p>
 </div>
 <div id="wrapping-a-method-without-dynclipy" class="section level2">
 <h2>Wrapping a method without dyncli(py)</h2>

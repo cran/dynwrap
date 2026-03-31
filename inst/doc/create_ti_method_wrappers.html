@@ -13,7 +13,7 @@
 <meta name="author" content="Wouter Saelens" />
 <meta name="author" content="Robrecht Cannoodt" />
 
-<meta name="date" content="2025-11-26" />
+<meta name="date" content="2026-03-31" />
 
 <title>Creating a TI method: Wrapping trajectories</title>
 
@@ -343,7 +343,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 trajectories</h1>
 <h4 class="author">Wouter Saelens</h4>
 <h4 class="author">Robrecht Cannoodt</h4>
-<h4 class="date">2025-11-26</h4>
+<h4 class="date">2026-03-31</h4>
 
 
 
@@ -370,16 +370,16 @@ For each cell, the percentages sum to one.</li>
 <pre><code>## # A tibble: 10 × 3
 ##    cell_id milestone_id percentage
 ##    &lt;chr&gt;   &lt;chr&gt;             &lt;dbl&gt;
-##  1 Cell_a  Milestone_C      0.336 
-##  2 Cell_a  Milestone_F      0.664 
-##  3 Cell_b  Milestone_B      0.151 
-##  4 Cell_b  Milestone_C      0.849 
-##  5 Cell_c  Milestone_C      0.981 
-##  6 Cell_c  Milestone_E      0.0194
-##  7 Cell_d  Milestone_B      0.497 
-##  8 Cell_d  Milestone_C      0.503 
-##  9 Cell_e  Milestone_B      0.470 
-## 10 Cell_e  Milestone_C      0.530</code></pre>
+##  1 Cell_a  Milestone_B      0.0529
+##  2 Cell_a  Milestone_C      0.947 
+##  3 Cell_b  Milestone_C      0.360 
+##  4 Cell_b  Milestone_F      0.640 
+##  5 Cell_c  Milestone_C      0.686 
+##  6 Cell_c  Milestone_F      0.314 
+##  7 Cell_d  Milestone_B      0.335 
+##  8 Cell_d  Milestone_C      0.665 
+##  9 Cell_e  Milestone_C      0.0345
+## 10 Cell_e  Milestone_E      0.966</code></pre>
 <ul>
 <li>Progressions, an alternative to milestone percentages, also contains
 the positions of each cell but now based on its progression through an
@@ -388,16 +388,16 @@ edge</li>
 <pre><code>## # A tibble: 10 × 4
 ##    cell_id from        to          percentage
 ##    &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;            &lt;dbl&gt;
-##  1 Cell_a  Milestone_C Milestone_F     0.664 
-##  2 Cell_b  Milestone_B Milestone_C     0.849 
-##  3 Cell_c  Milestone_C Milestone_E     0.0194
-##  4 Cell_d  Milestone_B Milestone_C     0.503 
-##  5 Cell_e  Milestone_B Milestone_C     0.530 
-##  6 Cell_f  Milestone_C Milestone_F     0.331 
-##  7 Cell_g  Milestone_A Milestone_B     0.378 
-##  8 Cell_h  Milestone_B Milestone_C     0.898 
-##  9 Cell_i  Milestone_B Milestone_C     0.699 
-## 10 Cell_j  Milestone_C Milestone_F     0.857</code></pre>
+##  1 Cell_a  Milestone_B Milestone_C      0.947
+##  2 Cell_b  Milestone_C Milestone_F      0.640
+##  3 Cell_c  Milestone_C Milestone_F      0.314
+##  4 Cell_d  Milestone_B Milestone_C      0.665
+##  5 Cell_e  Milestone_C Milestone_E      0.966
+##  6 Cell_f  Milestone_C Milestone_F      0.137
+##  7 Cell_g  Milestone_A Milestone_B      0.598
+##  8 Cell_h  Milestone_C Milestone_E      0.705
+##  9 Cell_i  Milestone_B Milestone_D      0.208
+## 10 Cell_j  Milestone_B Milestone_C      0.938</code></pre>
 <ul>
 <li>Divergence regions, contain the information on &gt;=3 milestones
 connected to eachother. This is optional.</li>
